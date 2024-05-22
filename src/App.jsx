@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import MockData from "./data/data.json";
 import TodoContainer from "./components/TodoContainer";
 import ButtonList from "./components/ButtonList";
@@ -14,13 +14,14 @@ function getTypeData(datas) {
 function App() {
   const [datas, setDatas] = useState(MockData);
   const [stackData, setStackData] = useState([]);
+  const timeoutRefs = useRef({});
 
   const addToTodo = (data) => {
     const updateData = datas.filter((item) => item.name !== data.name);
     setDatas(updateData);
     setStackData([...stackData, data]);
 
-    setTimeout(() => {
+    timeoutRefs.current[data.name] = setTimeout(() => {
       setStackData((prevStackData) => {
         if (prevStackData.includes(data)) {
           const newStackData = prevStackData.filter(
@@ -35,11 +36,11 @@ function App() {
   };
 
   const removeFromTodo = (data) => {
+    clearTimeout(timeoutRefs.current[data.name]);
     const updateData = stackData.filter(
       (stackData) => stackData.name !== data.name
     );
     setStackData(updateData);
-
     setDatas([...datas, data]);
   };
 
@@ -48,6 +49,7 @@ function App() {
       if (index != stackData.length - 1) {
         return true;
       } else {
+        clearTimeout(timeoutRefs.current[data.name]);
         setDatas([...datas, data]);
       }
     });
