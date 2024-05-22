@@ -16,7 +16,7 @@ function App() {
   const [stackData, setStackData] = useState([]);
 
   const addToTodo = (data) => {
-    const updateData = datas.filter((fruit) => fruit.name !== data.name);
+    const updateData = datas.filter((item) => item.name !== data.name);
     setDatas(updateData);
     setStackData([...stackData, data]);
 

@@ -1,38 +1,27 @@
 import React from "react";
 import Button from "./Button";
 
-const groupItemsByType = (items) => {
-  return items.reduce((group, item) => {
-    if (!group[item.type]) {
-      group[item.type] = [];
-    }
-    group[item.type].push(item);
-    return group;
-  }, {});
-};
-
 const TodoContainer = ({
   stackData,
   types,
   removeFromTodo,
   removeStackData,
 }) => {
-  const groupedItems = groupItemsByType(stackData);
-
   const onClickButton = (e, item) => {
     e.stopPropagation();
     removeFromTodo(item);
   };
 
   const renderedTodoContainer = types.map((type) => {
-    const renderTodoData = groupedItems[type]?.map((item) => {
-      return (
-        <div key={item.name}>
-          <Button onClick={(e) => onClickButton(e, item)}>{item.name}</Button>
-        </div>
-      );
+    const renderTodoData = stackData.map((item) => {
+      if (item.type === type) {
+        return (
+          <div key={item.name}>
+            <Button onClick={(e) => onClickButton(e, item)}>{item.name}</Button>
+          </div>
+        );
+      }
     });
-
     return (
       <div
         key={type}
