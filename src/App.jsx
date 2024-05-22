@@ -3,6 +3,7 @@ import MockData from "./data/data.json";
 import TodoContainer from "./components/TodoContainer";
 import ButtonList from "./components/ButtonList";
 
+//funtion for get type of data (Fruit/Vegetable or more).
 function getTypeData(datas) {
   const set = new Set();
   datas.forEach((data) => {
@@ -14,14 +15,15 @@ function getTypeData(datas) {
 function App() {
   const [datas, setDatas] = useState(MockData);
   const [stackData, setStackData] = useState([]);
-  const timeoutRefs = useRef({});
+  const timeoutRef = useRef({});
 
+  //funtion for add data to TodoContainer(Right column) when click to data button and remove it when it passes 5 sec.
   const addToTodo = (data) => {
     const updateData = datas.filter((item) => item.name !== data.name);
     setDatas(updateData);
     setStackData([...stackData, data]);
 
-    timeoutRefs.current[data.name] = setTimeout(() => {
+    timeoutRef.current[data.name] = setTimeout(() => {
       setStackData((prevStackData) => {
         if (prevStackData.includes(data)) {
           const newStackData = prevStackData.filter(
@@ -35,8 +37,9 @@ function App() {
     }, 5000);
   };
 
+  //funtion for remove Todo data add send data back to Button list(Left column) when click to data button.
   const removeFromTodo = (data) => {
-    clearTimeout(timeoutRefs.current[data.name]);
+    clearTimeout(timeoutRef.current[data.name]);
     const updateData = stackData.filter(
       (stackData) => stackData.name !== data.name
     );
@@ -44,12 +47,13 @@ function App() {
     setDatas([...datas, data]);
   };
 
+  //function for remove data when click on TodoContainer(Right column).
   const removeStackData = () => {
     const updataData = stackData.filter((data, index) => {
       if (index != stackData.length - 1) {
         return true;
       } else {
-        clearTimeout(timeoutRefs.current[data.name]);
+        clearTimeout(timeoutRef.current[data.name]);
         setDatas([...datas, data]);
       }
     });
